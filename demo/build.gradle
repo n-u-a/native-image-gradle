@@ -1,0 +1,90 @@
+
+plugins {
+	id 'org.springframework.boot' version '2.6.4'
+	id 'io.spring.dependency-management' version '1.0.11.RELEASE'
+	id 'org.springframework.experimental.aot' version '0.11.3'
+	id 'java'
+}
+
+apply plugin: 'application'
+
+group = 'com.native'
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = '11'
+
+configurations {
+	compileOnly {
+		extendsFrom annotationProcessor
+	}
+}
+
+repositories {
+	mavenCentral()
+	maven { url 'https://repo.spring.io/release' }
+}
+
+ext {
+	set('springCloudVersion', "2021.0.1")
+}
+
+dependencyManagement {
+	imports {
+		mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
+	}
+}
+
+dependencies {
+	implementation 'org.springframework.boot:spring-boot-starter'
+	implementation 'org.springframework.cloud:spring-cloud-function-context'
+	compileOnly 'org.projectlombok:lombok'
+	annotationProcessor 'org.projectlombok:lombok'
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	implementation group: 'org.springframework', name: 'spring-web', version: '5.3.16'
+	implementation group: 'org.springframework.cloud', name: 'spring-cloud-function-adapter-aws', version: '3.2.1'
+	implementation group: 'software.amazon.awssdk', name: 'dynamodb', version: '2.17.102'
+	implementation group: 'software.amazon.awssdk', name: 'protocol-core', version: '2.17.102'
+	implementation group: 'com.amazonaws', name: 'aws-lambda-java-events', version: '3.11.0'
+	implementation group: 'com.amazonaws', name: 'aws-lambda-java-serialization', version: '1.0.0'
+	implementation group: 'joda-time', name: 'joda-time', version: '2.9.8'
+}
+
+tasks.named('test') {
+	useJUnitPlatform()
+}
+
+graalvmNative {
+	binaries {
+		main {
+			// Main options
+			imageName = 'application' // The name of the native image, defaults to the project name
+			// mainClass = 'org.test.Main' // The main class to use, defaults to the application.mainClass
+			// debug = true // Determines if debug info should be generated, defaults to false
+			// verbose = true // Add verbose output, defaults to false
+			// fallback = true // Sets the fallback mode of native-image, defaults to false
+			// sharedLibrary = false // Determines if image is a shared library, defaults to false if `java-library` plugin isn't included
+
+			configurationFileDirectories.from(file('src/main/resources/META-INF')) // Adds a native image configuration file directory, containing files like reflection configuration
+
+			// Advanced options
+			// buildArgs.add('-H:ReflectionConfigurationFiles=src/main/resources/META-INF/reflect-config.json')
+			// useFatJar = true // Instead of passing each jar individually, builds a fat jar
+		}
+	}
+}
+
+bootBuildImage {
+	builder = "paketobuildpacks/builder:tiny"
+	environment = [
+			"BP_NATIVE_IMAGE" : "true"
+	]
+	buildpacks = ["gcr.io/paketo-buildpacks/java-native-image:7.1.0"]
+}
+
+task buildZip(type: Zip) {
+	mustRunAfter check // testの前とかにこの時間かかるビルドしたくないので
+	dependsOn nativeCompile // buildZipやる前にnativeCompile
+	from "./build/native/nativeCompile" // この階層にnative-imageができます
+	from "./bootstrap" // bootstrapをzipに混ぜ込んじゃいます
+	archiveFileName = 'latest_build.zip' // 初めからこの名前だからこの名前が良さそう
+}
+// build.dependsOn buildZip
