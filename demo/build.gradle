@@ -77,10 +77,9 @@ bootBuildImage {
 }
 
 task buildZip(type: Zip) {
-	mustRunAfter check // testの前とかにこの時間かかるビルドしたくないので
-	dependsOn nativeCompile // buildZipやる前にnativeCompile
-	from "./build/native/nativeCompile" // この階層にnative-imageができます
-	from "./bootstrap" // bootstrapをzipに混ぜ込んじゃいます
-	archiveFileName = 'latest_build.zip' // 初めからこの名前だからこの名前が良さそう
+	mustRunAfter check // testの前に長時間buildをしなくていいように
+	dependsOn nativeCompile
+	from "./build/native/nativeCompile"
+	from "./bootstrap"
+	archiveFileName = 'lambdaPackage.zip'
 }
-// build.dependsOn buildZip
