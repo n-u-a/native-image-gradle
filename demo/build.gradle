@@ -36,6 +36,7 @@ dependencyManagement {
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter'
 	implementation 'org.springframework.cloud:spring-cloud-function-context'
+	testImplementation 'junit:junit:4.13.1'
 	compileOnly 'org.projectlombok:lombok'
 	annotationProcessor 'org.projectlombok:lombok'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
@@ -61,7 +62,7 @@ graalvmNative {
 			configurationFileDirectories.from(file('src/main/resources/META-INF')) // Adds a native image configuration file directory, containing files like reflection configuration
 
 			// Advanced options
-			// buildArgs.add('-H:ReflectionConfigurationFiles=src/main/resources/META-INF/reflect-config.json')
+			// buildArgs.add('-H:ReflectionConfigurationFiles=../../src/main/resources/META-INF/reflect-config.json')
 			// useFatJar = true // Instead of passing each jar individually, builds a fat jar
 		}
 	}
