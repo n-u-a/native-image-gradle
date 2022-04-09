@@ -7,7 +7,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.support.MessageBuilder;
 
-import static org.junit.Assert.assertEquals;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 @SpringBootTest
 public class DemoBusinessTest {
@@ -19,15 +20,15 @@ public class DemoBusinessTest {
     void sampleTest() {
 
         Person payload = new Person();
-        payload.setName("test");
+        payload.setName("a");
         payload.setAge("20");
-        payload.setId("1111");
+        payload.setId("1");
 
         Message<Person> param = MessageBuilder.withPayload(payload).build();
 
         Message<Person> response = business.apply(param);
-        assertEquals(response.getPayload().getName(), "test");
-        assertEquals(response.getPayload().getAge(), "20");
-        assertEquals(response.getPayload().getId(), "1111");
+        assertThat(response.getPayload().getName(), is("a"));
+        assertThat(response.getPayload().getAge(), is("9696"));
+        assertThat(response.getPayload().getId(), is("1"));
     }
 }

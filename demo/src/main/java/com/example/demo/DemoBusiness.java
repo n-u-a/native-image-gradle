@@ -1,6 +1,11 @@
 package com.example.demo;
 
+import com.example.demo.dao.SampleDao;
+import com.example.demo.domain.UserDomain;
 import com.example.demo.model.Person;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.support.GenericMessage;
@@ -17,12 +22,27 @@ import java.util.Map;
 @Component
 public class DemoBusiness implements Function<Message<Person>, Message<Person>> {
 
+    @Autowired
+    private SampleDao sampleDao;
+
+    private static final Logger logger = LoggerFactory.getLogger(DemoBusiness.class);
+
     @Override
     public Message<Person> apply(Message<Person> request) {
         Person person = request.getPayload();
         Map<String, Object> resultHeader = new HashMap();
         resultHeader.put("statusCode", HttpStatus.CREATED.value());
-        resultHeader.put("X-Custom-Header", "Hello World from Spring Cloud Function AWS Adapter");
-        return new GenericMessage(person, resultHeader);
+
+        UserDomain userDomain = sampleDao.getUser(person.getId());
+
+        logger.info(System.getenv("DEFAULT_HANDLER"));
+        logger.info("ログ確認");
+
+        Person response = new Person();
+        response.setName("a");
+        response.setId(person.getId());
+        response.setAge("9696");
+
+        return new GenericMessage(response, resultHeader);
     }
 }
