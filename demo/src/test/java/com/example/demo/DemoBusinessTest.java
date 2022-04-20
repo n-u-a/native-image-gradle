@@ -1,5 +1,6 @@
 package com.example.demo;
 
+import com.example.demo.lambdas.SelectUserFunction;
 import com.example.demo.model.Person;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +15,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 public class DemoBusinessTest {
 
     @Autowired
-    private DemoBusiness business;
+    private SelectUserFunction business;
 
     @Test
     void sampleTest() {

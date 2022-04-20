@@ -15,4 +15,7 @@ public class SampleDao {
         return mapper.getUser(userId);
     }
 
+    public void insertUser(UserDomain user) {
+        mapper.insertUser(user);
+    }
 }

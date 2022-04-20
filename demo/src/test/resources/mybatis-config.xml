@@ -9,19 +9,4 @@
         <!-- 設定２：mapUnderscoreToCamelCase-->
         <setting name="mapUnderscoreToCamelCase" value="true"/>
     </settings>
-    <!-- 設定３：TypeAlias-->
-    <typeAliases>
-        <typeAlias alias="User" type="com.example.demo.domain.UserDomain"/>
-    </typeAliases>
-<!--    <environments default="mysql">-->
-<!--        <environment id="mysql">-->
-<!--            <transactionManager type="JDBC"/>-->
-<!--            <dataSource type="POOLED">-->
-<!--                <property name="driver" value="com.mysql.cj.jdbc.Driver"/>-->
-<!--                <property name="url" value="jdbc:mysql://kutnpvrhom7lki7u.cbetxkdyhwsb.us-east-1.rds.amazonaws.com:3306/uwb34nd2h7knjsoc?serverTimezone=JST"/>-->
-<!--                <property name="username" value="bb7vvwyqjw2q9ztb"/>-->
-<!--                <property name="password" value="artu4fp7wsnfsk5c"/>-->
-<!--            </dataSource>-->
-<!--        </environment>-->
-<!--    </environments>-->
 </configuration>

@@ -1,4 +1,2 @@
-{ "rules": [
-  {"excludeClasses": "src/test/java/com/example/demo/DemoBusinessTest"}
-]
+{
 }
