@@ -21,6 +21,8 @@ configurations {
 repositories {
 	mavenCentral()
 	maven { url 'https://repo.spring.io/release' }
+	maven { url "https://oss.sonatype.org/content/repositories/snapshots" }
+	gradlePluginPortal()
 }
 
 ext {
@@ -52,17 +54,21 @@ dependencies {
 	annotationProcessor 'org.projectlombok:lombok'
 
 	// mybatis
-	implementation 'org.mybatis:mybatis:3.4.+'
 	implementation 'org.mybatis:mybatis-spring:2.0.7'
+	implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:2.2.2'
+	implementation 'org.mybatis.spring.native:mybatis-spring-native-extensions:0.1.0-SNAPSHOT'
 
-	// https://mvnrepository.com/artifact/org.springframework/spring-jdbc
+	// JDBC
 	implementation group: 'org.springframework', name: 'spring-jdbc', version: '5.3.18'
-	// https://mvnrepository.com/artifact/com.zaxxer/HikariCP
 	implementation group: 'com.zaxxer', name: 'HikariCP', version: '5.0.1'
-
 
 	// MySQL
 	implementation group: 'mysql', name: 'mysql-connector-java', version: '8.0.21'
+
+	// other
+	implementation 'org.apache.commons:commons-lang3:3.12.0'
+	implementation 'org.apache.commons:commons-text:1.9'
+
 
 	// test
 	testImplementation 'junit:junit:4.13.1'
@@ -94,6 +100,10 @@ bootBuildImage {
 			"BP_NATIVE_IMAGE" : "true"
 	]
 	buildpacks = ["gcr.io/paketo-buildpacks/java-native-image:7.1.0"]
+}
+
+aotTest {
+	jvmArgs "-agentlib:native-image-agent=config-output-dir=./src/main/resources/META-INF,caller-filter-file=./src/main/resources/META-INF/filter.json"
 }
 
 task buildZip(type: Zip) {

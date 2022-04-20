@@ -27,7 +27,7 @@ public class DemoBusinessTest {
         Message<Person> param = MessageBuilder.withPayload(payload).build();
 
         Message<Person> response = business.apply(param);
-        assertThat(response.getPayload().getName(), is("a"));
+        assertThat(response.getPayload().getName(), is("サンプル"));
         assertThat(response.getPayload().getAge(), is("9696"));
         assertThat(response.getPayload().getId(), is("1"));
     }
