@@ -13,8 +13,7 @@
     </select>
 
     <insert id="insertUser" parameterType="com.example.demo.domain.UserDomain">
-        INSERT INTO
-        user
+        INSERT INTO user
         ( id
         , name
         , age
