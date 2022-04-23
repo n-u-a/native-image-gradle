@@ -1,12 +1,8 @@
 package com.example.demo.config;
 
-import com.example.demo.mapper.SampleMapper;
-import org.apache.ibatis.datasource.pooled.PooledDataSource;
-import org.apache.ibatis.datasource.pooled.PooledDataSourceFactory;
-import org.apache.ibatis.session.SqlSessionFactory;
+import org.apache.commons.lang3.StringUtils;
 import org.mybatis.spring.SqlSessionFactoryBean;
 import org.mybatis.spring.annotation.MapperScan;
-import org.mybatis.spring.mapper.MapperFactoryBean;
 import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -29,12 +25,16 @@ public class MyBatisConfig {
     @Bean
     public DataSource dataSource() {
 
+        String DB_URL = StringUtils.isEmpty(System.getenv("DB_URL")) ? "jdbc:mysql://alocalhost:3306/" : System.getenv("DB_URL");
+        String DB_USER_NAME = StringUtils.isEmpty(System.getenv("DB_USER_NAME")) ? "sample_user" : System.getenv("DB_USER_NAME");
+        String DB_PASSWORD = StringUtils.isEmpty(System.getenv("DB_PASSWORD")) ? "P@ssw0rd" : System.getenv("DB_PASSWORD");
+
         return DataSourceBuilder
                 .create()
-                .url("jdbc:mysql://kutnpvrhom7lki7u.cbetxkdyhwsb.us-east-1.rds.amazonaws.com:3306/uwb34nd2h7knjsoc?serverTimezone=JST")
+                .url(DB_URL)
                 .driverClassName("com.mysql.cj.jdbc.Driver")
-                .username("bb7vvwyqjw2q9ztb")
-                .password("artu4fp7wsnfsk5c")
+                .username(DB_USER_NAME)
+                .password(DB_PASSWORD)
                 .build();
     }
 

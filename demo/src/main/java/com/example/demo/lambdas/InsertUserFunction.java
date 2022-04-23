@@ -1,6 +1,6 @@
 package com.example.demo.lambdas;
 
-import com.example.demo.dao.SampleDao;
+import com.example.demo.dao.UserDao;
 import com.example.demo.domain.UserDomain;
 import com.example.demo.model.Person;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +21,7 @@ import java.util.function.Function;
 public class InsertUserFunction implements Function<Message<Person>, Message<Void>> {
 
     @Autowired
-    private SampleDao sampleDao;
+    private UserDao sampleDao;
 
     @Override
     public Message<Void> apply(Message<Person> request) {

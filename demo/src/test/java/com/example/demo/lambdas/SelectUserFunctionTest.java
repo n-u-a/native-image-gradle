@@ -1,6 +1,6 @@
 package com.example.demo.lambdas;
 
-import com.example.demo.dao.SampleDao;
+import com.example.demo.dao.UserDao;
 import com.example.demo.domain.UserDomain;
 import com.example.demo.model.Person;
 import org.junit.jupiter.api.Test;
@@ -27,7 +27,7 @@ public class SelectUserFunctionTest {
     private SelectUserFunction business;
 
     @Mock
-    private SampleDao sampleDao;
+    private UserDao userDao;
 
     @Test
     void sampleTest() {
@@ -39,7 +39,7 @@ public class SelectUserFunctionTest {
         response.setAge(99);
 
         // Daoのメソッドをモック
-        when(sampleDao.getUser(any())).thenReturn(response);
+        when(userDao.getUser(any())).thenReturn(response);
 
         // パラメータを作成してメソッドを実行
         Message<Person> param = MessageBuilder.withPayload(new Person()).build();
