@@ -77,6 +77,17 @@ jobs:
       - aws-cli/install
       - aws-cli/setup
       - run:
+          name: pwd
+          command: pwd
+      - run:
+          name: ls ../
+          command: ls -la ../
+      - run:
+          name: ls
+          command: ls -la
+      - run:
+          name: tree
+      - run:
           name: zip upload
           command: aws s3 cp ./demo/build/distributions/lambdaPackage.zip $S3_BUCKET
       - run:
