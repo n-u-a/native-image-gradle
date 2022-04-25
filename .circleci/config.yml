@@ -53,7 +53,7 @@ jobs:
   native-build:
     docker:
       - image: rituelle/graal-vm-sample:circleci
-    working_directory: ./repo
+    working_directory: ~/repo
     steps:
       - checkout
       - run:
@@ -70,6 +70,7 @@ jobs:
   deploy:
     docker:
       - image: cimg/base:stable
+    working_directory: ~/repo
     steps:
       - attach_workspace:
           at: ./demo
