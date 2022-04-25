@@ -85,7 +85,7 @@ jobs:
           command: aws s3 cp ./demo/lambdaPackage.zip $S3_BUCKET
       - run:
           name: deploy function
-          command: cat ./lambda-function-names | \
+          command: cat ./demo/lambda-function-names | \
             xargs -I LAMBDA_FUNCTION_NAME aws lambda update-function-code --function-name LAMBDA_FUNCTION_NAME \
             --s3-bucket $S3_BUCKET_NAME --s3-key lambdaPackage.zip
 
@@ -101,14 +101,14 @@ workflows:
           type: approval
           requires:
             - native-build
-          filters:
-            branches:
-              only:
-                - main
+          # filters:
+          #   branches:
+          #     only:
+          #       - main
       - deploy:
           requires:
             - hold
-          filters:
-            branches:
-              only:
-                - main
+          # filters:
+          #   branches:
+          #     only:
+          #       - main
