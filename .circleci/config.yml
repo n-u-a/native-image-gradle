@@ -1,26 +1,95 @@
-# Use the latest 2.1 version of CircleCI pipeline process engine.
-# See: https://circleci.com/docs/2.0/configuration-reference
 version: 2.1
 
-# Define a job to be invoked later in a workflow.
-# See: https://circleci.com/docs/2.0/configuration-reference/#jobs
+orbs:
+  aws-cli: circleci/aws-cli@3.1
+
 jobs:
-  say-hello:
-    # Specify the execution environment. You can specify an image from Dockerhub or use one of our Convenience Images from CircleCI's Developer Hub.
-    # See: https://circleci.com/docs/2.0/configuration-reference/#docker-machine-macos-windows-executor
+  build:
     docker:
-      - image: cimg/base:stable
-    # Add steps to the job
-    # See: https://circleci.com/docs/2.0/configuration-reference/#steps
+      - image: rituelle/graal-vm-sample:circleci
+      - image: cimg/mysql:8.0
+        environment:
+          MYSQL_DATABASE: sampledb
+          MYSQL_HOST: 127.0.0.1
+          MYSQL_ROOT_PASSWORD: "password"
+          MYSQL_ROOT_HOST: "%"
+        command:
+          [--character-set-server=utf8, --collation-server=utf8_general_ci]
+    working_directory: ~/repo
+    steps:
+      - checkout
+      # - restore_cache:
+      #     key: v1-gradle-wrapper-{{ checksum "./demo/gradle/wrapper/gradle-wrapper.properties" }}
+      # - restore_cache:
+      #     keys:
+      #       - v1-dependencies-{{ checksum "./demo/build.gradle" }}
+      #       - v1-dependencies-
+      - run:
+          name: Chmod
+          command: chmod +x ./demo/gradlew
+
+      - run: cd demo && ./gradlew dependencies
+
+      # - save_cache:
+      #     paths:
+      #       - ./demo/.gradle/wrapper
+      #     key: v1-gradle-wrapper-{{ checksum "./demo/gradle/wrapper/gradle-wrapper.properties" }}
+      # - save_cache:
+      #     paths:
+      #       - ./demo/.gradle/caches
+      #     key: v1-dependencies-{{ checksum "./demo/build.gradle" }}
+
+      # - run:
+      #     name: run test !!
+      #     command: gradle test -x test
+
+      # - store_artifacts:
+      #     path: ./build/reports
+      #     destination: reports
+
+      # - store_test_results:
+      #     path: ./build/test-results
+
+  native-build:
+    docker:
+      - image: rituelle/graal-vm-sample:circleci
+    working_directory: ./repo
     steps:
       - checkout
       - run:
-          name: "Say hello"
-          command: "echo Hello, World!"
+          name: Chmod
+          command: chmod +x ./demo/gradlew
+      - run:
+          name: run native build!
+          command: cd demo && ./gradlew buildZip
+      - persist_to_workspace:
+          root: ./demo/build/distributions
+          paths:
+            - lambdaPackage.zip
 
-# Invoke jobs via workflows
-# See: https://circleci.com/docs/2.0/configuration-reference/#workflows
+  deploy:
+    docker:
+      - image: cimg/base:stable
+    steps:
+      - attach_workspace:
+          at: ./demo
+      - aws-cli/install
+      - aws-cli/setup
+      - run:
+          name: zip upload
+          command: aws s3 cp ./demo/build/distributions/lambdaPackage.zip $S3_BUCKET
+      - run:
+          name: deploy function
+          command: aws lambda update-function-code --function-name $LAMBDA_FUNCTION_NAME --s3-bucket $S3_BUCKET_NAME --s3-key lambdaPackage.zip
+
 workflows:
-  say-hello-workflow:
+  version: 2
+  build-test-and-deploy:
     jobs:
-      - say-hello
+      - build
+      - native-build:
+          requires:
+            - build
+      - deploy:
+          requires:
+            - native-build
