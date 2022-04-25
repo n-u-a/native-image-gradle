@@ -1,0 +1,114 @@
+version: 2.1
+
+orbs:
+  aws-cli: circleci/aws-cli@3.1
+
+jobs:
+  build:
+    docker:
+      - image: rituelle/graal-vm-sample:circleci
+      - image: cimg/mysql:8.0
+        environment:
+          MYSQL_DATABASE: sampledb
+          MYSQL_HOST: 127.0.0.1
+          MYSQL_ROOT_PASSWORD: "password"
+          MYSQL_ROOT_HOST: "%"
+        command:
+          [--character-set-server=utf8, --collation-server=utf8_general_ci]
+    working_directory: ~/repo
+    steps:
+      - checkout
+      - restore_cache:
+          key: v1-gradle-wrapper-{{ checksum "./demo/gradle/wrapper/gradle-wrapper.properties" }}
+      - restore_cache:
+          keys:
+            - v1-dependencies-{{ checksum "./demo/build.gradle" }}
+            - v1-dependencies-
+      - run:
+          name: Chmod
+          command: chmod +x ./demo/gradlew
+
+      - run: cd demo && ./gradlew dependencies
+
+      - save_cache:
+          paths:
+            - ./demo/.gradle/wrapper
+          key: v1-gradle-wrapper-{{ checksum "./demo/gradle/wrapper/gradle-wrapper.properties" }}
+      - save_cache:
+          paths:
+            - ./demo/.gradle/caches
+          key: v1-dependencies-{{ checksum "./demo/build.gradle" }}
+
+      # - run:
+      #     name: run test !!
+      #     command: gradle test -x test
+
+      # - store_artifacts:
+      #     path: ./build/reports
+      #     destination: reports
+
+      # - store_test_results:
+      #     path: ./build/test-results
+
+  native-build:
+    docker:
+      - image: rituelle/graal-vm-sample:circleci
+    working_directory: ~/repo
+    steps:
+      - checkout
+      - run:
+          name: Chmod
+          command: chmod +x ./demo/gradlew
+      - run:
+          name: run native build!
+          command: cd demo && ./gradlew buildZip
+      - persist_to_workspace:
+          root: ./demo/build/distributions
+          paths:
+            - lambdaPackage.zip
+      - persist_to_workspace:
+          root: ./demo
+          paths:
+            - lambda-function-names
+
+  deploy:
+    docker:
+      - image: cimg/base:stable
+    working_directory: ~/repo
+    steps:
+      - attach_workspace:
+          at: ./demo
+      - aws-cli/install
+      - aws-cli/setup
+      - run:
+          name: zip upload
+          command: aws s3 cp ./demo/lambdaPackage.zip $S3_BUCKET
+      - run:
+          name: deploy function
+          command: |
+            cat ./demo/lambda-function-names | 
+            xargs -I LAMBDA_FUNCTION_NAME aws lambda update-function-code --function-name LAMBDA_FUNCTION_NAME --s3-bucket $S3_BUCKET_NAME --s3-key lambdaPackage.zip
+
+workflows:
+  version: 2
+  build-test-and-deploy:
+    jobs:
+      - build
+      - native-build:
+          requires:
+            - build
+      - hold:
+          type: approval
+          requires:
+            - native-build
+          # filters:
+          #   branches:
+          #     only:
+          #       - main
+      - deploy:
+          requires:
+            - hold
+          # filters:
+          #   branches:
+          #     only:
+          #       - main
