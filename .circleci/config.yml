@@ -91,6 +91,14 @@ workflows:
       - native-build:
           requires:
             - build
-      - deploy:
+      - hold:
+          type: approval
           requires:
             - native-build
+      - deploy:
+          requires:
+            - hold
+          filters:
+            branches:
+              only:
+                - main
