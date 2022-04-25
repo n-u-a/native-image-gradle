@@ -77,26 +77,8 @@ jobs:
       - aws-cli/install
       - aws-cli/setup
       - run:
-          name: pwd
-          command: pwd
-      - run:
-          name: ls ../project
-          command: ls -la ../project
-      - run:
-          name: ls ./demo
-          command: ls -la ./demo
-      - run:
-          name: ls ./demo/build
-          command: ls -la ./demo/build
-      - run:
-          name: ls ./demo/build/distributions
-          command: ls -la ./demo/build/distributions
-      - run:
-          name: ls
-          command: ls -la
-      - run:
           name: zip upload
-          command: aws s3 cp ./demo/build/distributions/lambdaPackage.zip $S3_BUCKET
+          command: aws s3 cp ./demo/lambdaPackage.zip $S3_BUCKET
       - run:
           name: deploy function
           command: aws lambda update-function-code --function-name $LAMBDA_FUNCTION_NAME --s3-bucket $S3_BUCKET_NAME --s3-key lambdaPackage.zip
