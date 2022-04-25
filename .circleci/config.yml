@@ -87,10 +87,7 @@ jobs:
           name: deploy function
           command: |
             cat ./demo/lambda-function-names | 
-            xargs -I LAMBDA_FUNCTION_NAME aws lambda update-function-code 
-            --function-name LAMBDA_FUNCTION_NAME 
-            --s3-bucket $S3_BUCKET_NAME 
-            --s3-key lambdaPackage.zip
+            xargs -I LAMBDA_FUNCTION_NAME aws lambda update-function-code --function-name LAMBDA_FUNCTION_NAME --s3-bucket $S3_BUCKET_NAME --s3-key lambdaPackage.zip
 
 workflows:
   version: 2
