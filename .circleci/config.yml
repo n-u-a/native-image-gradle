@@ -87,6 +87,7 @@ jobs:
           command: ls -la
       - run:
           name: tree
+          command: tree
       - run:
           name: zip upload
           command: aws s3 cp ./demo/build/distributions/lambdaPackage.zip $S3_BUCKET
