@@ -95,6 +95,9 @@ workflows:
           type: approval
           requires:
             - native-build
+          branches:
+            only:
+              - main
       - deploy:
           requires:
             - hold
