@@ -2,53 +2,7 @@
   "resources":{
   "includes":[
     {
-      "pattern":"\\QMETA-INF/services/java.sql.Driver\\E"
-    }, 
-    {
-      "pattern":"\\QMETA-INF/services/org.junit.platform.engine.TestEngine\\E"
-    }, 
-    {
-      "pattern":"\\QMETA-INF/services/org.junit.platform.launcher.TestExecutionListener\\E"
-    }, 
-    {
-      "pattern":"\\QMETA-INF/spring.components\\E"
-    }, 
-    {
-      "pattern":"\\Q\\E"
-    }, 
-    {
-      "pattern":"\\Qapplication.properties\\E"
-    }, 
-    {
-      "pattern":"\\Qcom/example/demo/DemoApplication.class\\E"
-    }, 
-    {
-      "pattern":"\\Qcom/example/demo/config/MyBatisConfig.class\\E"
-    }, 
-    {
-      "pattern":"\\Qcom/example/demo/mapper/SampleMapper.xml\\E"
-    }, 
-    {
-      "pattern":"\\Qcom/mysql/cj/TlsSettings.properties\\E"
-    }, 
-    {
-      "pattern":"\\Qmockito-extensions/org.mockito.plugins.MockResolver\\E"
-    }, 
-    {
       "pattern":"\\Qmybatis-config.xml\\E"
-    }, 
-    {
-      "pattern":"\\Qorg/apache/ibatis/builder/xml/mybatis-3-config.dtd\\E"
-    }, 
-    {
-      "pattern":"\\Qorg/apache/ibatis/builder/xml/mybatis-3-mapper.dtd\\E"
-    }, 
-    {
-      "pattern":"\\Qorg/slf4j/impl/StaticLoggerBinder.class\\E"
     }
-  ]},
-  "bundles":[{
-      "name":"com.mysql.cj.LocalizedErrorMessages",
-      "locales":[""]
-    }]
+  ]}
 }
