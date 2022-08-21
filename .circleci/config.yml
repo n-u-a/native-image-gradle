@@ -70,6 +70,10 @@ jobs:
           root: ./demo
           paths:
             - lambda-function-names
+      - persist_to_workspace:
+          root: .
+          paths:
+            - assume-role-with-oidc.sh
 
   deploy:
     docker:
