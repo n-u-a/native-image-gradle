@@ -80,9 +80,10 @@ jobs:
       - attach_workspace:
           at: ./demo
       - aws-cli/install
-      - run: ls -l  demo
       - run: |
-          sh ./demo/assume-role-with-oidc.sh ${AWS_ROLE_ARN} ${CIRCLE_OIDC_TOKEN}
+          chmod +x ./demo/assume-role-with-oidc.sh
+          ls -l  demo
+      - run: ./demo/assume-role-with-oidc.sh ${AWS_ROLE_ARN} ${CIRCLE_OIDC_TOKEN}
       - run:
           name: zip upload
           command: |
