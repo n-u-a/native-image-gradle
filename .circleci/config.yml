@@ -120,8 +120,8 @@ workflows:
       #         only:
       #           - main
       - deploy:
-          # requires:
-          #   - hold
+          requires:
+            - native-build
           filters:
             branches:
               only:
