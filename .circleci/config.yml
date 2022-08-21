@@ -120,7 +120,7 @@ workflows:
           requires:
             - native-build
           context:
-            - oidc
+            - IdP
           filters:
             branches:
               only:
