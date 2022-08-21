@@ -119,6 +119,8 @@ workflows:
       - deploy:
           requires:
             - native-build
+          context:
+            - oidc
           filters:
             branches:
               only:
