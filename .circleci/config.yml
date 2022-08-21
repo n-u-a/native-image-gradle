@@ -70,9 +70,6 @@ jobs:
           root: ./demo
           paths:
             - lambda-function-names
-      - persist_to_workspace:
-          root: ./
-          paths:
             - assume-role-with-oidc.sh
 
   deploy:
@@ -83,19 +80,19 @@ jobs:
       - attach_workspace:
           at: ./demo
       - aws-cli/install
-      - run: ls
+      - run: ls demo
       - run: |
           set -x
-          ./assume-role-with-oidc.sh ${AWS_ROLE_ARN} ${CIRCLE_OIDC_TOKEN}
+          ./demo/assume-role-with-oidc.sh ${AWS_ROLE_ARN} ${CIRCLE_OIDC_TOKEN}
       - run:
           name: zip upload
           command: |
-            source aws-envs.sh
+            source ./demo/aws-envs.sh
             aws s3 cp ./demo/lambdaPackage.zip $S3_BUCKET
       - run:
           name: deploy function
           command: |
-            source aws-envs.sh
+            source ./demo/aws-envs.sh
             cat ./demo/lambda-function-names | 
             xargs -I LAMBDA_FUNCTION_NAME \
             aws lambda update-function-code \
