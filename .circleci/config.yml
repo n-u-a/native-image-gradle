@@ -84,15 +84,17 @@ jobs:
           chmod +x ./demo/assume-role-with-oidc.sh
           ls -l  demo
       - run: ./demo/assume-role-with-oidc.sh ${AWS_ROLE_ARN} ${CIRCLE_OIDC_TOKEN}
+      - run: |
+          ls -l  demo
       - run:
           name: zip upload
           command: |
-            source ./aws-envs.sh
+            source ./demo/aws-envs.sh
             aws s3 cp ./demo/lambdaPackage.zip $S3_BUCKET
       - run:
           name: deploy function
           command: |
-            source ./aws-envs.sh
+            source ./demo/aws-envs.sh
             cat ./demo/lambda-function-names | 
             xargs -I LAMBDA_FUNCTION_NAME \
             aws lambda update-function-code \
