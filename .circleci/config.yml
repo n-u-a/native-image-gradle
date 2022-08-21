@@ -80,7 +80,7 @@ jobs:
       - attach_workspace:
           at: ./demo
       - aws-cli/install
-      - run: ls demo
+      - run: ls -l  demo
       - run: |
           sh ./demo/assume-role-with-oidc.sh ${AWS_ROLE_ARN} ${CIRCLE_OIDC_TOKEN}
       - run:
