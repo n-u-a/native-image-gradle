@@ -71,7 +71,7 @@ jobs:
           paths:
             - lambda-function-names
       - persist_to_workspace:
-          root: .
+          root: ./
           paths:
             - assume-role-with-oidc.sh
 
@@ -83,6 +83,7 @@ jobs:
       - attach_workspace:
           at: ./demo
       - aws-cli/install
+      - run: ls
       - run: |
           set -x
           ./assume-role-with-oidc.sh ${AWS_ROLE_ARN} ${CIRCLE_OIDC_TOKEN}
@@ -110,17 +111,17 @@ workflows:
       - native-build:
           requires:
             - build
-      - hold:
-          type: approval
-          requires:
-            - native-build
-          filters:
-            branches:
-              only:
-                - main
+      # - hold:
+      #     type: approval
+      #     requires:
+      #       - native-build
+      #     filters:
+      #       branches:
+      #         only:
+      #           - main
       - deploy:
-          requires:
-            - hold
+          # requires:
+          #   - hold
           filters:
             branches:
               only:
